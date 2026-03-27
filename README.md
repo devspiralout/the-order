@@ -14,6 +14,9 @@ BE Engineer, PM, and QE — that read documentation from your **Fawkes** repo
 to understand your coding practices, business logic, and architectural
 decisions, then collaborate to deliver work end-to-end.
 
+The team also **learns over time** — a dream process consolidates session
+learnings into durable knowledge that makes future sessions smarter.
+
 ## Prerequisites
 
 - Claude Code v2.1.32 or later
@@ -25,10 +28,14 @@ decisions, then collaborate to deliver work end-to-end.
 
 1. Install the plugin:
    ```
-   /plugin install <repo-url>
+   /plugin install devspiralout/the-order
    ```
 
-2. That's it. The plugin automatically finds your local Fawkes clone by
+2. On first launch, the plugin will greet you and ask whether you want
+   **auto** or **manual** dream mode (see below). You can also run `/init`
+   at any time to reconfigure.
+
+3. That's it. The plugin automatically finds your local Fawkes clone by
    checking common locations (`~/Fawkes`, `~/repos/Fawkes`, `~/Desktop/Fawkes`,
    etc.) and caches the result.
 
@@ -46,6 +53,45 @@ Use the slash commands to spawn the team:
 /code-review https://github.com/org/repo/pull/123
 /bug-investigation Users see stale data after updating their profile
 ```
+
+## Dream — Learning Across Sessions
+
+After each session, agents can consolidate what they learned — decisions made,
+gotchas discovered, standards applied, edge cases found — into durable
+knowledge files that future sessions can load. Think of it like REM sleep
+for your agent team.
+
+### Modes
+
+| Mode | How it works | Best for |
+|------|-------------|----------|
+| **Auto** | Dream runs automatically before each session ends | Teams that want continuous improvement without thinking about it |
+| **Manual** | Run `/dream` yourself when you want to consolidate | Users who prefer full control or only dream after substantial sessions |
+
+Configure your preference:
+- On first launch, the plugin asks you to choose
+- Run `/init` to change it later
+- Or set `ORDER_AUTO_DREAM` to `true` or `false` in `.claude/settings.local.json`
+
+### What gets captured
+
+Knowledge files live in `knowledge/` and contain things that **can't be derived
+from reading Fawkes docs alone** — the kind of thing a teammate would tell you
+over coffee:
+
+- Which standards actually apply where (and where they conflict)
+- Codebase-specific gotchas and landmines
+- Patterns that work well vs ones that caused problems
+- Common review feedback that keeps recurring
+- Gaps in the Fawkes documentation
+
+### Knowledge vs Fawkes docs
+
+- **Fawkes docs** = team-maintained standards (the manual)
+- **Knowledge files** = agent-learned context (field experience)
+
+If a learning keeps recurring, that's a signal to promote it to a proper
+Fawkes standard.
 
 ## Viewing Agents at Work
 
@@ -86,25 +132,30 @@ agent directly.
 ```
 the-order/
 ├── .claude-plugin/
-│   └── plugin.json          # Plugin metadata
-├── .mcp.json                # Fawkes docs MCP server (auto-discovers repo)
+│   └── plugin.json              # Plugin metadata
+├── .mcp.json                    # Fawkes docs MCP server (auto-discovers repo)
 ├── scripts/
-│   ├── find-fawkes.sh       # Auto-discovers Fawkes repo location
-│   └── start-fawkes-mcp.sh  # Wrapper that finds repo and starts MCP server
+│   ├── find-fawkes.sh           # Auto-discovers Fawkes repo location
+│   ├── start-fawkes-mcp.sh      # Wrapper that finds repo and starts MCP server
+│   ├── session-init.sh          # SessionStart hook (onboarding + flag reset)
+│   └── auto-dream-check.sh     # Stop hook (blocks if auto-dream not done)
 ├── .claude/
-│   └── settings.json        # Permissions and env config
+│   └── settings.json            # Permissions, hooks, and env config
 ├── agents/
-│   ├── orchestrator/        # Coordination, task breakdown
-│   ├── fe-engineer/         # React/TypeScript frontend
-│   ├── be-engineer/         # C#/.NET backend
-│   ├── pm/                  # Requirements and acceptance criteria
-│   └── qe/                  # Test strategy and validation
+│   ├── orchestrator/            # Coordination, task breakdown
+│   ├── fe-engineer/             # React/TypeScript frontend
+│   ├── be-engineer/             # C#/.NET backend
+│   ├── pm/                      # Requirements and acceptance criteria
+│   └── qe/                      # Test strategy and validation
 ├── skills/
-│   ├── team-setup/          # /team-setup — full squad for feature work
-│   ├── code-review/         # /code-review — five-angle PR review
-│   └── bug-investigation/   # /bug-investigation — investigate and fix bugs
-├── CLAUDE.md                # Team-wide instructions
-└── README.md                # You are here
+│   ├── team-setup/              # /team-setup — full squad for feature work
+│   ├── code-review/             # /code-review — five-angle PR review
+│   ├── bug-investigation/       # /bug-investigation — investigate and fix bugs
+│   ├── dream/                   # /dream — consolidate session learnings
+│   └── init/                    # /init — first-time setup and config
+├── knowledge/                   # Accumulated learnings (grows over time)
+├── CLAUDE.md                    # Team-wide instructions
+└── README.md                    # You are here
 ```
 
 ## Team Roles

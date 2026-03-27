@@ -74,6 +74,41 @@ Use these slash commands to spawn the team:
 | `/team-setup <task>` | Full squad for feature delivery |
 | `/code-review <PR>` | Five-angle PR review |
 | `/bug-investigation <bug>` | Investigate, reproduce, fix, regression-test |
+| `/dream` | Consolidate session learnings into durable knowledge |
+| `/init` | First-time setup — configure dream mode preference |
+
+---
+
+## Dream — Learning Across Sessions
+
+Agents accumulate context during a session — decisions, gotchas, standards
+applied, edge cases discovered. The dream process consolidates these into
+durable knowledge files in `knowledge/` that future sessions can load.
+
+### How it works
+
+1. At session end (or manually), `/dream` reviews what happened
+2. Non-obvious, reusable learnings are distilled into `knowledge/` files
+3. Task-specific details are discarded; only generalisable insights are kept
+4. Future sessions load these files alongside Fawkes standards
+
+### Modes
+
+- **Auto** (`ORDER_AUTO_DREAM=true`): Dream runs automatically before each
+  session ends. A hook blocks the stop until dreaming is complete.
+- **Manual** (`ORDER_AUTO_DREAM=false`): Run `/dream` yourself when you want
+  to consolidate. This is the default.
+
+Configure your preference with `/init` or by setting `ORDER_AUTO_DREAM` in
+`.claude/settings.local.json`.
+
+### Knowledge vs Fawkes docs
+
+- **Fawkes docs** = team-maintained standards (the manual)
+- **Knowledge files** = agent-learned context (field experience)
+
+Knowledge files should contain things that can't be derived from reading Fawkes
+docs alone. If a learning keeps recurring, promote it to a proper Fawkes standard.
 
 ---
 
