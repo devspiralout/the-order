@@ -26,9 +26,10 @@ learnings into durable knowledge that makes future sessions smarter.
 
 ## Setup
 
-1. Install the plugin:
+1. Add the marketplace and install the plugin:
    ```
-   /plugin install devspiralout/the-order
+   /plugin marketplace add devspiralout/the-order
+   /plugin install order-of-the-phoenix@the-order
    ```
 
 2. On first launch, the plugin will greet you and ask whether you want
