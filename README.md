@@ -132,30 +132,33 @@ agent directly.
 ```
 the-order/
 ├── .claude-plugin/
-│   └── plugin.json              # Plugin metadata
-├── .mcp.json                    # Fawkes docs MCP server (auto-discovers repo)
-├── scripts/
-│   ├── find-fawkes.sh           # Auto-discovers Fawkes repo location
-│   ├── start-fawkes-mcp.sh      # Wrapper that finds repo and starts MCP server
-│   ├── session-init.sh          # SessionStart hook (onboarding + flag reset)
-│   └── auto-dream-check.sh     # Stop hook (blocks if auto-dream not done)
-├── .claude/
-│   └── settings.json            # Permissions, hooks, and env config
-├── agents/
-│   ├── orchestrator/            # Coordination, task breakdown
-│   ├── fe-engineer/             # React/TypeScript frontend
-│   ├── be-engineer/             # C#/.NET backend
-│   ├── pm/                      # Requirements and acceptance criteria
-│   └── qe/                      # Test strategy and validation
-├── skills/
-│   ├── team-setup/              # /team-setup — full squad for feature work
-│   ├── code-review/             # /code-review — five-angle PR review
-│   ├── bug-investigation/       # /bug-investigation — investigate and fix bugs
-│   ├── dream/                   # /dream — consolidate session learnings
-│   └── init/                    # /init — first-time setup and config
-├── knowledge/                   # Accumulated learnings (grows over time)
-├── CLAUDE.md                    # Team-wide instructions
-└── README.md                    # You are here
+│   └── marketplace.json             # Marketplace definition
+├── plugin/                          # The actual plugin
+│   ├── .claude-plugin/
+│   │   └── plugin.json              # Plugin metadata
+│   ├── .claude/
+│   │   └── settings.json            # Permissions, hooks, and env config
+│   ├── .mcp.json                    # Fawkes docs MCP server (auto-discovers repo)
+│   ├── scripts/
+│   │   ├── find-fawkes.sh           # Auto-discovers Fawkes repo location
+│   │   ├── start-fawkes-mcp.sh      # Wrapper that finds repo and starts MCP server
+│   │   ├── session-init.sh          # SessionStart hook (onboarding + flag reset)
+│   │   └── auto-dream-check.sh     # Stop hook (blocks if auto-dream not done)
+│   ├── agents/
+│   │   ├── orchestrator/            # Coordination, task breakdown
+│   │   ├── fe-engineer/             # React/TypeScript frontend
+│   │   ├── be-engineer/             # C#/.NET backend
+│   │   ├── pm/                      # Requirements and acceptance criteria
+│   │   └── qe/                      # Test strategy and validation
+│   ├── skills/
+│   │   ├── team-setup/              # /team-setup — full squad for feature work
+│   │   ├── code-review/             # /code-review — five-angle PR review
+│   │   ├── bug-investigation/       # /bug-investigation — investigate and fix bugs
+│   │   ├── dream/                   # /dream — consolidate session learnings
+│   │   └── init/                    # /init — first-time setup and config
+│   ├── knowledge/                   # Accumulated learnings (grows over time)
+│   └── CLAUDE.md                    # Team-wide instructions
+└── README.md                        # You are here
 ```
 
 ## Team Roles

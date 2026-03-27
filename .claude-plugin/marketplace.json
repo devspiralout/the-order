@@ -10,7 +10,7 @@
   "plugins": [
     {
       "name": "order-of-the-phoenix",
-      "source": ".",
+      "source": "./plugin",
       "description": "Agent team (Orchestrator, FE, BE, PM, QE) that reads Fawkes engineering standards and applies them to feature delivery, code review, and bug investigation.",
       "version": "1.0.0",
       "author": {
