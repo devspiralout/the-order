@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "fawkes-docs": {
+      "command": "bash",
+      "args": [
+        "./scripts/start-fawkes-mcp.sh"
+      ]
+    }
+  }
+}

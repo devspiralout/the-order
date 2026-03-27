@@ -1,0 +1,38 @@
+---
+name: team-setup
+description: Spawn the full Order agent team (Orchestrator, PM, FE, BE, QE) for a feature ticket, piece of work, or any task that needs the full squad.
+---
+
+Spawn the full Order of the Phoenix agent team to handle the given task.
+
+## Team to spawn
+
+Create all five agents with these roles:
+
+1. **Orchestrator** — Break down the task, coordinate the team, sequence dependencies
+2. **PM** — Define acceptance criteria, scope, and trade-offs
+3. **FE Engineer** — Implement frontend changes in React/TypeScript
+4. **BE Engineer** — Implement backend changes in C#/.NET
+5. **QE** — Define test plan, review coverage, validate the implementation
+
+## Workflow
+
+Follow this sequence:
+
+1. **Orchestrator** shares the task context with **PM**
+2. **PM** defines scope, acceptance criteria, and any trade-offs
+3. **Orchestrator** breaks the task into work items and assigns to **FE** and **BE**
+4. **QE** defines test plan based on PM's acceptance criteria (shift-left)
+5. **FE** and **BE** align on API contracts, then implement in parallel
+6. Engineers share progress and pull each other in as needed
+7. **QE** reviews test coverage, identifies gaps and edge cases
+8. **PM** reviews against acceptance criteria
+9. **Orchestrator** synthesises everything into the final deliverable
+
+## Before starting
+
+All agents MUST read the relevant Fawkes documentation using the `mcp__fawkes-docs__*` tools before doing any work. Check `auror-delivery/standards/` for coding standards relevant to your role.
+
+## The task
+
+$ARGUMENTS
