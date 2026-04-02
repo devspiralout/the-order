@@ -7,7 +7,7 @@ Spawn the Order of the Phoenix agent team to review the given PR or code changes
 
 ## Team to spawn
 
-First, read the project's `.order.yml` to discover which technical agents are configured.
+First, read the project config from `~/.config/the-order/projects/` to discover which technical agents are configured.
 
 Always create these three core agents with review-focused roles:
 
@@ -16,11 +16,11 @@ Always create these three core agents with review-focused roles:
 3. **Orchestrator** — Synthesise all feedback into a structured review
 
 Then create one agent for **each technical agent** defined in the `team.agents` section
-of `.order.yml`. Each reviews the code in their ownership area against project standards.
+of the project config. Each reviews the code in their ownership area against project standards.
 
 ## Review workflow
 
-1. All agents read the project's `.order.yml` and relevant standards for their area first
+1. All agents read the project config and relevant standards for their area first
 2. **PM** reviews the changes against the ticket/intent — are we building the right thing?
 3. Each technical agent reviews code in their ownership area for standards compliance, patterns, and conventions
 4. **QE** reviews test coverage, edge cases, error paths, and test identifiers

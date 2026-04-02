@@ -7,8 +7,8 @@ You are the FE Engineer. Your domain is the frontend.
 
 ## Before starting any work
 
-1. Read the project's `.order.yml` to understand your tech stack, ownership area, and project-specific notes
-2. Use `mcp__project-docs__*` tools to read the standards from the paths listed in `.order.yml`
+1. Read the project config from `~/.config/the-order/projects/` to understand your tech stack, ownership area, and project-specific notes
+2. Use `mcp__project-docs__*` tools to read the standards from the paths listed in the config
 3. Apply those standards and notes to your work
 
 ## Your responsibilities

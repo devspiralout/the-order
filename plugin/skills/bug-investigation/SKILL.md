@@ -7,7 +7,7 @@ Spawn the Order of the Phoenix agent team to investigate and fix the given bug.
 
 ## Team to spawn
 
-First, read the project's `.order.yml` to discover which technical agents are configured.
+First, read the project config from `~/.config/the-order/projects/` to discover which technical agents are configured.
 
 Always create these three core agents with investigation-focused roles:
 
@@ -16,7 +16,7 @@ Always create these three core agents with investigation-focused roles:
 3. **Orchestrator** — Coordinate the investigation and synthesise findings
 
 Then create one agent for **each technical agent** defined in the `team.agents` section
-of `.order.yml`. Each investigates the code in their ownership area.
+of the project config. Each investigates the code in their ownership area.
 
 ## Investigation workflow
 

@@ -14,8 +14,9 @@ BE Engineer, PM, and QE — that read documentation from **your project**
 to understand your coding practices, business logic, and architectural
 decisions, then collaborate to deliver work end-to-end.
 
-It works with **any tech stack** — you describe your project in a simple
-`.order.yml` file and the agents adapt.
+It works with **any tech stack** — you describe your project in a config file
+and the agents adapt. Configs are stored in `~/.config/the-order/projects/`,
+so your project repo stays completely untouched.
 
 The team also **learns over time** — a dream process consolidates session
 learnings into durable knowledge that makes future sessions smarter.
@@ -34,20 +35,27 @@ learnings into durable knowledge that makes future sessions smarter.
    /plugin install order-of-the-phoenix@the-order
    ```
 
-2. Create an `.order.yml` in your project root (or run `/init` to generate
-   one automatically). See [examples/](examples/) for templates.
+2. Run `/init` from your project directory. It will scan your codebase,
+   generate a config, and ask your preferences (dream mode, Office UI).
+   See [examples/](examples/) for config templates.
 
-3. On first launch, the plugin will greet you and ask whether you want
-   **auto** or **manual** dream mode (see below). You can also run `/init`
-   at any time to reconfigure.
+3. Start a new session (so the MCP server picks up the config), and you're live.
 
-## .order.yml — Project Configuration
+## Project Configuration
 
-The `.order.yml` file tells the agents about your project. Here's a minimal example:
+Running `/init` scans your project and creates a config file at:
+```
+~/.config/the-order/projects/<project-name>.order.yml
+```
+
+The config stays **outside your project repo** — no files to commit or gitignore.
+
+Here's what a config looks like:
 
 ```yaml
 project:
   name: "MyProject"
+  root: "/Users/you/MyProject"
   standards_paths:
     - "docs/standards/"
 
@@ -77,9 +85,9 @@ See the [examples/](examples/) directory for complete configurations covering:
 
 ### Auto-discovery
 
-If you don't set `ORDER_PROJECT_PATH`, the plugin finds your project by
-walking up from the current directory looking for `.order.yml`. It caches
-the result for fast startup.
+The plugin matches your current directory against the `project.root` field
+in stored configs. No env vars needed if you're working inside a configured
+project.
 
 To override: `export ORDER_PROJECT_PATH=~/your/project/path`
 
@@ -207,7 +215,8 @@ the-order/
 │   │   └── settings.json            # Permissions, hooks, and env config
 │   ├── .mcp.json                    # Project docs MCP server (auto-discovers repo)
 │   ├── scripts/
-│   │   ├── find-project.sh          # Auto-discovers project via .order.yml
+│   │   ├── find-project.sh          # Auto-discovers project via stored configs
+│   │   ├── find-config.sh          # Resolves config file path for current project
 │   │   ├── start-project-mcp.sh     # Wrapper that finds project and starts MCP server
 │   │   ├── emit-event.sh            # PostToolUse hook (captures agent activity for UI)
 │   │   ├── office-server.sh         # Manages Office UI server lifecycle
@@ -239,12 +248,12 @@ the-order/
 | Role | Focus |
 |------|-------|
 | Orchestrator | Task breakdown, sequencing, coordination |
-| FE Engineer | Frontend codebase (as defined in .order.yml) |
-| BE Engineer | Backend codebase (as defined in .order.yml) |
+| FE Engineer | Frontend codebase (as defined in project config) |
+| BE Engineer | Backend codebase (as defined in project config) |
 | PM | Requirements, scope, acceptance criteria |
 | QE | Test strategy, coverage, quality validation |
 
-Technical agent roles and their specialisations are configured in `.order.yml` —
+Technical agent roles and their specialisations are configured in the project config —
 the FE/BE split is a common default but not required.
 
 See `agents/<role>/AGENT.md` for full role definitions.

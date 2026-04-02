@@ -26,13 +26,13 @@ if [[ ! -f "$INIT_FLAG" ]]; then
 Welcome to **The Order of the Phoenix** — your agent team plugin.
 
 This plugin spawns a team of specialist agents (Orchestrator, PM, QE, plus
-technical agents defined in your .order.yml) that read your project's coding
+technical agents from your project config) that read your project's coding
 standards and collaborate on feature delivery, code reviews, and bug investigations.
 
 ## Getting Started
 
-The Order needs an `.order.yml` file in your project root to understand your
-tech stack and standards. Run `/init` to generate one automatically.
+Run `/init` to scan your project and create a config. Configs are stored in
+`~/.config/the-order/projects/` — your project repo stays untouched.
 
 ## Features
 

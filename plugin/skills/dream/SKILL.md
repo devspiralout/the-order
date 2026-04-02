@@ -43,7 +43,7 @@ For each potential learning, apply this filter:
 ## Step 4 — Write knowledge files
 
 Write or update files in the `knowledge/` directory. Create one patterns file
-per technical agent defined in `.order.yml`, plus these standard files:
+per technical agent defined in the project config, plus these standard files:
 
 | File | Contents |
 |------|----------|

@@ -1,13 +1,13 @@
 ---
 name: team-setup
-description: Spawn the full Order agent team (Orchestrator, PM, QE, plus technical agents from .order.yml) for a feature ticket, piece of work, or any task that needs the full squad.
+description: Spawn the full Order agent team (Orchestrator, PM, QE, plus technical agents from project config) for a feature ticket, piece of work, or any task that needs the full squad.
 ---
 
 Spawn the full Order of the Phoenix agent team to handle the given task.
 
 ## Team to spawn
 
-First, read the project's `.order.yml` to discover which technical agents are configured.
+First, read the project config from `~/.config/the-order/projects/` to discover which technical agents are configured.
 
 Always create these three core agents:
 
@@ -21,7 +21,7 @@ of `.order.yml`. For example:
 - A project with a single `engineer` gets one technical agent
 - A project with `engineer` and `infra-engineer` gets two technical agents
 
-Use the `name`, `owns`, `stack`, `testing`, and `notes` fields from `.order.yml` to
+Use the `name`, `owns`, `stack`, `testing`, and `notes` fields from the project config to
 brief each technical agent on their role.
 
 ## Workflow
@@ -40,7 +40,7 @@ Follow this sequence:
 
 ## Before starting
 
-All agents MUST read the project's `.order.yml` to understand the tech stack, ownership areas, and project-specific conventions. Then use the `mcp__project-docs__*` tools to read the relevant standards for your role.
+All agents MUST read the project config from `~/.config/the-order/projects/` to understand the tech stack, ownership areas, and project-specific conventions. Then use the `mcp__project-docs__*` tools to read the relevant standards for your role.
 
 ## The task
 
