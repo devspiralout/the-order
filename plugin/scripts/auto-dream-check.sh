@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 # Stop hook: blocks session end if auto-dream is enabled and dream hasn't run.
+# Also cleans up the Office UI server if it's running.
 
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 DREAM_FLAG="/tmp/the-order-dream-done"
+
+# Stop Office UI server if running
+"$SCRIPT_DIR/office-server.sh" stop 2>/dev/null || true
 
 # If auto-dream is off or unset, allow stop
 if [[ "${ORDER_AUTO_DREAM:-false}" != "true" ]]; then

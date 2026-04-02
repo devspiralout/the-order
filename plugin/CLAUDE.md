@@ -97,7 +97,37 @@ Use these slash commands to spawn the team:
 | `/code-review <PR>` | Five-angle PR review |
 | `/bug-investigation <bug>` | Investigate, reproduce, fix, regression-test |
 | `/dream` | Consolidate session learnings into durable knowledge |
-| `/init` | First-time setup — configure dream mode, scaffold .order.yml |
+| `/office` | Launch the visual Office UI |
+| `/init` | First-time setup — configure dream mode, Office UI, scaffold .order.yml |
+
+---
+
+## Office UI — Visual Agent Dashboard
+
+The Office UI is an optional isometric pixel-art visualisation of the agent team
+working in real-time. Think Severance's MDR floor rendered in Habbo Hotel style.
+
+### How it works
+
+- A `PostToolUse` hook passively captures every agent tool call (zero token cost)
+- Events are written to `/tmp/the-order-events/` as JSONL files (one per agent)
+- A lightweight Node.js server watches the event files and pushes updates via WebSocket
+- A Phaser 3 browser app renders the isometric office with animated agent characters
+
+### What you see
+
+- Agents walk through a door when spawned and sit at assigned desks
+- Speech bubbles show what each agent is working on (reading, editing, searching, etc.)
+- Agents hop/emote when collaborating with each other
+- A whiteboard tracks recent activity
+- When agents complete, they file out through the door
+
+### Modes
+
+- **Auto** (`ORDER_UI=true`): Server starts automatically each session
+- **Manual** (`ORDER_UI=false`): Run `/office` to start on demand. Default.
+
+Configure with `/init` or by setting `ORDER_UI` in `.claude/settings.local.json`.
 
 ---
 

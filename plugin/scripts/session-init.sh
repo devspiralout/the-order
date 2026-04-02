@@ -1,39 +1,43 @@
 #!/usr/bin/env bash
-# SessionStart hook: clears dream flag and shows onboarding on first run.
+# SessionStart hook: clears flags, starts Office UI if enabled, shows onboarding.
 
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 DREAM_FLAG="/tmp/the-order-dream-done"
+EVENT_DIR="/tmp/the-order-events"
 INIT_FLAG="${HOME}/.config/the-order/initialized"
 
 # Clear dream flag from any previous session
 rm -f "$DREAM_FLAG"
+
+# Clear stale events from previous session
+rm -rf "$EVENT_DIR"
+mkdir -p "$EVENT_DIR"
+
+# Auto-start Office UI if enabled
+if [[ "${ORDER_UI:-false}" == "true" ]]; then
+  "$SCRIPT_DIR/office-server.sh" start
+fi
 
 # First-run onboarding
 if [[ ! -f "$INIT_FLAG" ]]; then
   cat <<'WELCOME'
 Welcome to **The Order of the Phoenix** — your agent team plugin.
 
-This plugin spawns a team of specialist agents (Orchestrator, FE Engineer,
-BE Engineer, PM, QE) that read your project's coding standards and collaborate
-on feature delivery, code reviews, and bug investigations.
+This plugin spawns a team of specialist agents (Orchestrator, PM, QE, plus
+technical agents defined in your .order.yml) that read your project's coding
+standards and collaborate on feature delivery, code reviews, and bug investigations.
 
 ## Getting Started
 
 The Order needs an `.order.yml` file in your project root to understand your
 tech stack and standards. Run `/init` to generate one automatically.
 
-## Dream Mode
+## Features
 
-The Order has a **dream** feature — after each session, agents can consolidate
-what they learned into durable knowledge that makes future sessions smarter.
-
-You have two options:
-
-- **Auto** (`ORDER_AUTO_DREAM=true`): The team will automatically dream before
-  ending each session. Recommended for most users.
-- **Manual** (`ORDER_AUTO_DREAM=false`): You run `/dream` yourself when you
-  want to consolidate learnings. Good if you prefer full control.
+- **Dream Mode**: Agents consolidate learnings into durable knowledge across sessions
+- **Office UI**: A visual isometric office showing agents working in real-time
 
 **Run `/init` to configure your preferences and get started.**
 
@@ -44,6 +48,7 @@ Once configured, use these commands:
 - `/code-review <PR>` — five-angle PR review
 - `/bug-investigation <bug>` — investigate and fix a bug
 - `/dream` — manually trigger dream consolidation
+- `/office` — launch the visual Office UI
 WELCOME
 
   mkdir -p "$(dirname "$INIT_FLAG")"

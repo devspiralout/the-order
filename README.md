@@ -93,6 +93,30 @@ Use the slash commands to spawn the team:
 /bug-investigation Users see stale data after updating their profile
 ```
 
+## Office UI — Visual Agent Dashboard
+
+Watch your agent team work in real-time in an isometric pixel-art office
+(Severance MDR × Habbo Hotel aesthetic).
+
+```
+/office
+```
+
+Agents walk through a door when spawned, sit at desks, show speech bubbles
+with what they're working on, and file out when done. The UI is powered by
+passive `PostToolUse` hooks — **zero extra token cost** to the agents.
+
+### Modes
+
+| Mode | How it works | Best for |
+|------|-------------|----------|
+| **Auto** | UI server starts every session | Always-on visual feedback |
+| **Manual** | Run `/office` to start on demand | Occasional use, no overhead |
+
+Configure with `/init` or set `ORDER_UI` to `true` in `.claude/settings.local.json`.
+
+**Requirements:** Node.js (for the UI server). The browser connects to `http://localhost:3742`.
+
 ## Dream — Learning Across Sessions
 
 After each session, agents can consolidate what they learned — decisions made,
@@ -185,8 +209,10 @@ the-order/
 │   ├── scripts/
 │   │   ├── find-project.sh          # Auto-discovers project via .order.yml
 │   │   ├── start-project-mcp.sh     # Wrapper that finds project and starts MCP server
-│   │   ├── session-init.sh          # SessionStart hook (onboarding + flag reset)
-│   │   └── auto-dream-check.sh      # Stop hook (blocks if auto-dream not done)
+│   │   ├── emit-event.sh            # PostToolUse hook (captures agent activity for UI)
+│   │   ├── office-server.sh         # Manages Office UI server lifecycle
+│   │   ├── session-init.sh          # SessionStart hook (onboarding + UI auto-start)
+│   │   └── auto-dream-check.sh      # Stop hook (dream check + UI cleanup)
 │   ├── agents/
 │   │   ├── orchestrator/            # Coordination, task breakdown
 │   │   ├── fe-engineer/             # Frontend specialist
@@ -198,7 +224,11 @@ the-order/
 │   │   ├── code-review/             # /code-review — five-angle PR review
 │   │   ├── bug-investigation/       # /bug-investigation — investigate and fix bugs
 │   │   ├── dream/                   # /dream — consolidate session learnings
+│   │   ├── office/                   # /office — launch visual Office UI
 │   │   └── init/                    # /init — first-time setup and config
+│   ├── ui/                          # Office UI (Phaser 3 isometric app)
+│   │   ├── server.js                # Express + WebSocket event bridge
+│   │   └── public/                  # Phaser app (HTML, JS, procedural sprites)
 │   ├── knowledge/                   # Accumulated learnings (grows over time)
 │   └── CLAUDE.md                    # Team-wide instructions
 └── README.md                        # You are here

@@ -90,13 +90,26 @@ Based on their choice, update `.claude/settings.local.json` to set the
 Merge with any existing content in `.claude/settings.local.json` — don't
 overwrite other settings.
 
-## Step 3 — Confirm setup
+## Step 3 — Configure Office UI
+
+Ask if they want the visual Office UI — an isometric pixel-art view of agents
+working in real-time (Severance MDR × Habbo Hotel aesthetic).
+
+- **Enabled** (`ORDER_UI=true`): The Office UI server starts automatically each
+  session. Run `/office` to open the browser, or it opens automatically.
+- **Disabled** (`ORDER_UI=false`): No UI server, no overhead. This is the default.
+
+Based on their choice, also set `ORDER_UI` in `.claude/settings.local.json`
+alongside the dream mode setting.
+
+## Step 4 — Confirm setup
 
 Confirm the setup is complete and remind them of the available commands:
 - `/team-setup <task>` — full squad for feature work
 - `/code-review <PR>` — five-angle PR review
 - `/bug-investigation <bug>` — investigate and fix bugs
 - `/dream` — manually trigger dream consolidation
+- `/office` — launch the visual Office UI
 
 Create the initialisation flag:
 ```bash
