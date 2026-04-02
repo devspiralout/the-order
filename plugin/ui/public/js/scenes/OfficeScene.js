@@ -5,7 +5,6 @@
  * Connects to the WebSocket event stream to animate agents in real-time.
  */
 
-import { SpriteFactory } from "../sprites/SpriteFactory.js";
 import { AgentCharacter } from "../entities/AgentCharacter.js";
 import { SpeechBubble } from "../entities/SpeechBubble.js";
 
@@ -16,7 +15,7 @@ const AGENT_COLORS = {
   qe: { body: 0x2c5282, accent: 0x63b3ed, label: "QE" },
   "fe-engineer": { body: 0x276749, accent: 0x68d391, label: "FE" },
   "be-engineer": { body: 0x553c9a, accent: 0xb794f4, label: "BE" },
-  // Fallback for custom agents from .order.yml
+  // Fallback for custom agents from project config
   default: { body: 0x718096, accent: 0xcbd5e0, label: "Agent" },
 };
 
@@ -41,6 +40,7 @@ export class OfficeScene extends Phaser.Scene {
     this.agents = new Map();
     this.deskAssignments = new Map();
     this.nextDeskIndex = 0;
+    this.bubbleIdCounter = 0;
     this.ws = null;
   }
 
@@ -49,8 +49,6 @@ export class OfficeScene extends Phaser.Scene {
   }
 
   create() {
-    this.spriteFactory = new SpriteFactory(this);
-
     this.drawOffice();
     this.drawDoor();
     this.drawWhiteboard();
@@ -257,7 +255,7 @@ export class OfficeScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
-    const agent = { character, colors, deskPos, bubble: null };
+    const agent = { character, colors, deskPos, bubble: null, bubbleId: 0 };
     this.agents.set(agentName, agent);
 
     this.updateStatus();
@@ -277,27 +275,16 @@ export class OfficeScene extends Phaser.Scene {
     const by = agent.character.sprite.y - 36;
     agent.bubble = new SpeechBubble(this, bx, by, text, agent.colors.accent);
 
-    // Auto-dismiss after 4 seconds
+    // Track which bubble this timer belongs to
+    const bubbleId = ++this.bubbleIdCounter;
+    agent.bubbleId = bubbleId;
+
+    // Auto-dismiss after 4 seconds — only if this bubble is still the current one
     this.time.delayedCall(4000, () => {
-      if (agent.bubble) {
+      if (agent.bubbleId === bubbleId && agent.bubble) {
         agent.bubble.fadeOut();
         agent.bubble = null;
       }
-    });
-  }
-
-  dismissAgent(agentName) {
-    const agent = this.agents.get(agentName);
-    if (!agent) return;
-
-    if (agent.bubble) {
-      agent.bubble.destroy();
-    }
-
-    agent.character.walkTo(this.doorPosition.x, this.doorPosition.y, () => {
-      agent.character.destroy();
-      this.agents.delete(agentName);
-      this.updateStatus();
     });
   }
 

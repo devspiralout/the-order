@@ -10,7 +10,8 @@
 #   CLAUDE_AGENT_NAME   — name of the agent that made the call (from AGENT.md frontmatter)
 #   CLAUDE_SESSION_ID   — unique session identifier
 
-set -euo pipefail
+# Don't use pipefail — grep returning no match (exit 1) is expected and not an error
+set -eu
 
 EVENT_DIR="/tmp/the-order-events"
 mkdir -p "$EVENT_DIR"
@@ -30,52 +31,59 @@ TOOL="${CLAUDE_TOOL_NAME:-unknown}"
 INPUT="${CLAUDE_TOOL_INPUT:-{}}"
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
+# Safe JSON field extraction — returns empty string on failure
+json_field() {
+  local field="$1"
+  local max_len="${2:-50}"
+  # Try jq first (proper JSON parsing), fall back to grep
+  if command -v jq &>/dev/null; then
+    echo "$INPUT" | jq -r ".$field // \"\"" 2>/dev/null | cut -c1-"$max_len" || echo ""
+  else
+    echo "$INPUT" | grep -o "\"$field\"[[:space:]]*:[[:space:]]*\"[^\"]*\"" | head -1 | sed 's/.*:[[:space:]]*"//; s/"$//' | cut -c1-"$max_len" || echo ""
+  fi
+}
+
 # Infer a human-readable action from the tool call
 case "$TOOL" in
   Read)
-    # Extract file path from input
-    FILE=$(echo "$INPUT" | grep -o '"file_path":"[^"]*"' | head -1 | cut -d'"' -f4 | xargs basename 2>/dev/null || echo "file")
+    FILE=$(json_field "file_path" 200)
     ACTION="reading"
-    DETAIL="$FILE"
+    DETAIL=$(basename "$FILE" 2>/dev/null || echo "file")
     ;;
   Edit)
-    FILE=$(echo "$INPUT" | grep -o '"file_path":"[^"]*"' | head -1 | cut -d'"' -f4 | xargs basename 2>/dev/null || echo "file")
+    FILE=$(json_field "file_path" 200)
     ACTION="editing"
-    DETAIL="$FILE"
+    DETAIL=$(basename "$FILE" 2>/dev/null || echo "file")
     ;;
   Write)
-    FILE=$(echo "$INPUT" | grep -o '"file_path":"[^"]*"' | head -1 | cut -d'"' -f4 | xargs basename 2>/dev/null || echo "file")
+    FILE=$(json_field "file_path" 200)
     ACTION="writing"
-    DETAIL="$FILE"
+    DETAIL=$(basename "$FILE" 2>/dev/null || echo "file")
     ;;
   Bash)
-    CMD=$(echo "$INPUT" | grep -o '"command":"[^"]*"' | head -1 | cut -d'"' -f4 | cut -c1-50)
     ACTION="running"
-    DETAIL="$CMD"
+    DETAIL=$(json_field "command" 50)
     ;;
   Grep)
-    PATTERN=$(echo "$INPUT" | grep -o '"pattern":"[^"]*"' | head -1 | cut -d'"' -f4 | cut -c1-30)
     ACTION="searching"
-    DETAIL="$PATTERN"
+    DETAIL=$(json_field "pattern" 30)
     ;;
   Glob)
-    PATTERN=$(echo "$INPUT" | grep -o '"pattern":"[^"]*"' | head -1 | cut -d'"' -f4 | cut -c1-30)
     ACTION="finding"
-    DETAIL="$PATTERN"
+    DETAIL=$(json_field "pattern" 30)
     ;;
   Agent)
-    # Agent spawning or sending message to another agent
     ACTION="collaborating"
-    DETAIL=$(echo "$INPUT" | grep -o '"description":"[^"]*"' | head -1 | cut -d'"' -f4 | cut -c1-50)
+    DETAIL=$(json_field "description" 50)
     ;;
   SendMessage)
-    TO=$(echo "$INPUT" | grep -o '"to":"[^"]*"' | head -1 | cut -d'"' -f4)
     ACTION="talking"
+    TO=$(json_field "to" 30)
     DETAIL="to $TO"
     ;;
   TaskCreate|TaskUpdate)
     ACTION="planning"
-    DETAIL=$(echo "$INPUT" | grep -o '"subject":"[^"]*"' | head -1 | cut -d'"' -f4 | cut -c1-50)
+    DETAIL=$(json_field "subject" 50)
     ;;
   *)
     ACTION="working"
@@ -83,8 +91,21 @@ case "$TOOL" in
     ;;
 esac
 
-# Write event as a single JSON line to the agent's event file
-EVENT="{\"agent\":\"$AGENT\",\"action\":\"$ACTION\",\"detail\":\"$DETAIL\",\"tool\":\"$TOOL\",\"ts\":\"$TIMESTAMP\"}"
-echo "$EVENT" >> "$EVENT_DIR/$AGENT.jsonl"
+# Write event as properly escaped JSON using jq, or safe fallback
+if command -v jq &>/dev/null; then
+  jq -cn \
+    --arg agent "$AGENT" \
+    --arg action "$ACTION" \
+    --arg detail "$DETAIL" \
+    --arg tool "$TOOL" \
+    --arg ts "$TIMESTAMP" \
+    '{agent: $agent, action: $action, detail: $detail, tool: $tool, ts: $ts}' \
+    >> "$EVENT_DIR/$AGENT.jsonl"
+else
+  # Fallback: strip characters that would break JSON
+  SAFE_DETAIL=$(echo "$DETAIL" | tr -d '"\\\n\r' | cut -c1-50)
+  echo "{\"agent\":\"$AGENT\",\"action\":\"$ACTION\",\"detail\":\"$SAFE_DETAIL\",\"tool\":\"$TOOL\",\"ts\":\"$TIMESTAMP\"}" \
+    >> "$EVENT_DIR/$AGENT.jsonl"
+fi
 
 exit 0
