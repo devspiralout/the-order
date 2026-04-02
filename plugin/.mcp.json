@@ -1,9 +1,9 @@
 {
   "mcpServers": {
-    "fawkes-docs": {
+    "project-docs": {
       "command": "bash",
       "args": [
-        "./scripts/start-fawkes-mcp.sh"
+        "./scripts/start-project-mcp.sh"
       ]
     }
   }

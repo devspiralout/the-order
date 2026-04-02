@@ -12,7 +12,7 @@
       "Write",
       "Bash",
       "Agent",
-      "mcp__fawkes-docs__*"
+      "mcp__project-docs__*"
     ]
   },
   "hooks": {

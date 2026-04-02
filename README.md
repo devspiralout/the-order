@@ -9,10 +9,13 @@ how to learn.
 
 ## What Is This?
 
-The Order spawns a team of five specialist agents — Orchestrator, FE Engineer,
-BE Engineer, PM, and QE — that read documentation from your **Fawkes** repo
+The Order spawns a team of specialist agents — Orchestrator, FE Engineer,
+BE Engineer, PM, and QE — that read documentation from **your project**
 to understand your coding practices, business logic, and architectural
 decisions, then collaborate to deliver work end-to-end.
+
+It works with **any tech stack** — you describe your project in a simple
+`.order.yml` file and the agents adapt.
 
 The team also **learns over time** — a dream process consolidates session
 learnings into durable knowledge that makes future sessions smarter.
@@ -20,7 +23,6 @@ learnings into durable knowledge that makes future sessions smarter.
 ## Prerequisites
 
 - Claude Code v2.1.32 or later
-- The Fawkes repo cloned locally
 - Node.js (for the MCP filesystem server)
 - tmux (optional — for split-pane view of agents working simultaneously)
 
@@ -32,18 +34,54 @@ learnings into durable knowledge that makes future sessions smarter.
    /plugin install order-of-the-phoenix@the-order
    ```
 
-2. On first launch, the plugin will greet you and ask whether you want
+2. Create an `.order.yml` in your project root (or run `/init` to generate
+   one automatically). See [examples/](examples/) for templates.
+
+3. On first launch, the plugin will greet you and ask whether you want
    **auto** or **manual** dream mode (see below). You can also run `/init`
    at any time to reconfigure.
 
-3. That's it. The plugin automatically finds your local Fawkes clone by
-   checking common locations (`~/Fawkes`, `~/repos/Fawkes`, `~/Desktop/Fawkes`,
-   etc.) and caches the result.
+## .order.yml — Project Configuration
 
-   If your Fawkes repo is somewhere unusual, set the override:
-   ```bash
-   export FAWKES_REPO_PATH=~/your/custom/path/Fawkes
-   ```
+The `.order.yml` file tells the agents about your project. Here's a minimal example:
+
+```yaml
+project:
+  name: "MyProject"
+  standards_paths:
+    - "docs/standards/"
+
+team:
+  agents:
+    fe-engineer:
+      name: "FE Engineer"
+      owns: "src/frontend/"
+      stack: "React 18, TypeScript, Tailwind CSS"
+      testing: "Jest, React Testing Library, Playwright"
+      notes: |
+        - Use the design system components from src/components/ui/
+
+    be-engineer:
+      name: "BE Engineer"
+      owns: "src/api/"
+      stack: "Python 3.12, FastAPI, SQLAlchemy"
+      testing: "pytest, httpx"
+      notes: |
+        - All endpoints must have OpenAPI docstrings
+```
+
+See the [examples/](examples/) directory for complete configurations covering:
+- **C#/.NET + React** (full-stack web app)
+- **Python FastAPI** (API service)
+- **Go monolith** with infrastructure agent
+
+### Auto-discovery
+
+If you don't set `ORDER_PROJECT_PATH`, the plugin finds your project by
+walking up from the current directory looking for `.order.yml`. It caches
+the result for fast startup.
+
+To override: `export ORDER_PROJECT_PATH=~/your/project/path`
 
 ## Usage
 
@@ -77,22 +115,22 @@ Configure your preference:
 ### What gets captured
 
 Knowledge files live in `knowledge/` and contain things that **can't be derived
-from reading Fawkes docs alone** — the kind of thing a teammate would tell you
-over coffee:
+from reading your project docs alone** — the kind of thing a teammate would
+tell you over coffee:
 
 - Which standards actually apply where (and where they conflict)
 - Codebase-specific gotchas and landmines
 - Patterns that work well vs ones that caused problems
 - Common review feedback that keeps recurring
-- Gaps in the Fawkes documentation
+- Gaps in the project documentation
 
-### Knowledge vs Fawkes docs
+### Knowledge vs project docs
 
-- **Fawkes docs** = team-maintained standards (the manual)
+- **Project docs** = team-maintained standards (the manual)
 - **Knowledge files** = agent-learned context (field experience)
 
 If a learning keeps recurring, that's a signal to promote it to a proper
-Fawkes standard.
+project standard.
 
 ## Viewing Agents at Work
 
@@ -134,21 +172,25 @@ agent directly.
 the-order/
 ├── .claude-plugin/
 │   └── marketplace.json             # Marketplace definition
+├── examples/                        # .order.yml examples for common stacks
+│   ├── dotnet-react.order.yml        # C#/.NET + React example
+│   ├── python-fastapi.order.yml     # Python FastAPI example
+│   └── go-monolith.order.yml        # Go + Terraform example
 ├── plugin/                          # The actual plugin
 │   ├── .claude-plugin/
 │   │   └── plugin.json              # Plugin metadata
 │   ├── .claude/
 │   │   └── settings.json            # Permissions, hooks, and env config
-│   ├── .mcp.json                    # Fawkes docs MCP server (auto-discovers repo)
+│   ├── .mcp.json                    # Project docs MCP server (auto-discovers repo)
 │   ├── scripts/
-│   │   ├── find-fawkes.sh           # Auto-discovers Fawkes repo location
-│   │   ├── start-fawkes-mcp.sh      # Wrapper that finds repo and starts MCP server
+│   │   ├── find-project.sh          # Auto-discovers project via .order.yml
+│   │   ├── start-project-mcp.sh     # Wrapper that finds project and starts MCP server
 │   │   ├── session-init.sh          # SessionStart hook (onboarding + flag reset)
-│   │   └── auto-dream-check.sh     # Stop hook (blocks if auto-dream not done)
+│   │   └── auto-dream-check.sh      # Stop hook (blocks if auto-dream not done)
 │   ├── agents/
 │   │   ├── orchestrator/            # Coordination, task breakdown
-│   │   ├── fe-engineer/             # React/TypeScript frontend
-│   │   ├── be-engineer/             # C#/.NET backend
+│   │   ├── fe-engineer/             # Frontend specialist
+│   │   ├── be-engineer/             # Backend specialist
 │   │   ├── pm/                      # Requirements and acceptance criteria
 │   │   └── qe/                      # Test strategy and validation
 │   ├── skills/
@@ -167,9 +209,12 @@ the-order/
 | Role | Focus |
 |------|-------|
 | Orchestrator | Task breakdown, sequencing, coordination |
-| FE Engineer | React/TypeScript frontend in ClientApp |
-| BE Engineer | C#/.NET backend, EF Core, APIs |
+| FE Engineer | Frontend codebase (as defined in .order.yml) |
+| BE Engineer | Backend codebase (as defined in .order.yml) |
 | PM | Requirements, scope, acceptance criteria |
 | QE | Test strategy, coverage, quality validation |
+
+Technical agent roles and their specialisations are configured in `.order.yml` —
+the FE/BE split is a common default but not required.
 
 See `agents/<role>/AGENT.md` for full role definitions.

@@ -12,11 +12,11 @@ happened this session and distil non-obvious, reusable learnings into the
 Look back at everything that happened this session:
 - What tasks were completed?
 - What decisions were made and why?
-- What standards were referenced from Fawkes?
+- What standards were referenced from the project?
 - What surprises, gotchas, or edge cases were discovered?
 - What review feedback was given?
 - Were there any disagreements or trade-offs?
-- Did any Fawkes docs turn out to be outdated, incomplete, or conflicting?
+- Did any project docs turn out to be outdated, incomplete, or conflicting?
 
 ## Step 2 — Read existing knowledge
 
@@ -28,7 +28,7 @@ captured. You don't want to duplicate or contradict existing learnings.
 For each potential learning, apply this filter:
 
 **KEEP** if it is:
-- Non-obvious — wouldn't be clear from just reading Fawkes docs
+- Non-obvious — wouldn't be clear from just reading project docs
 - Reusable — applies beyond this specific task
 - Actionable — helps a future agent make a better decision
 
@@ -37,21 +37,21 @@ For each potential learning, apply this filter:
 
 **DISCARD** if it:
 - Is task-specific with no general applicability
-- Is already well-documented in Fawkes
+- Is already well-documented in the project's standards
 - Is obvious to any experienced engineer
 
 ## Step 4 — Write knowledge files
 
-Write or update files in the `knowledge/` directory. Use these categories:
+Write or update files in the `knowledge/` directory. Create one patterns file
+per technical agent defined in `.order.yml`, plus these standard files:
 
 | File | Contents |
 |------|----------|
-| `standards-map.md` | Which Fawkes standards apply to which areas, and gaps/conflicts found |
-| `fe-patterns.md` | Frontend-specific learnings, gotchas, patterns that work |
-| `be-patterns.md` | Backend-specific learnings, gotchas, patterns that work |
+| `{agent-name}-patterns.md` | One per technical agent — learnings specific to their domain |
+| `standards-map.md` | Which project standards apply where, gaps/conflicts found |
 | `review-lessons.md` | Common review feedback, quality patterns to watch for |
 | `gotchas.md` | Codebase-specific landmines and non-obvious behaviours |
-| `doc-gaps.md` | Fawkes documentation that is missing, outdated, or conflicting |
+| `doc-gaps.md` | Project documentation that is missing, outdated, or conflicting |
 
 Each entry in a knowledge file should follow this format:
 

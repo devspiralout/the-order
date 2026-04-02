@@ -6,58 +6,80 @@
 
 ## Purpose
 
-This repo is a Claude Code plugin that spawns an agent team to learn and
-enforce our engineering ways of working. Agents read documentation from
-the **Fawkes** repo, then apply that knowledge when reviewing code,
-generating new features, or auditing our standards.
+This is a Claude Code plugin that spawns an agent team to learn and
+enforce your engineering ways of working. Agents read documentation from
+your project, then apply that knowledge when reviewing code, generating
+new features, or auditing standards.
 
 ---
 
-## The Fawkes Repository
+## Project Configuration
 
-Our source of truth for coding practices and business logic lives in the
-Fawkes repo. The path is configured via the `FAWKES_REPO_PATH` environment
-variable. Before doing any work, agents MUST familiarise themselves with
-the relevant documentation.
+Every project that uses The Order needs an `.order.yml` file in its root.
+This file tells the agents what tech stack you use, where your standards
+live, and what each agent owns.
+
+The path to the project is configured via the `ORDER_PROJECT_PATH` environment
+variable, or auto-discovered by walking up from the current working directory.
+
+### Reading the manifest
+
+Before doing any work, agents MUST read `.order.yml` to understand:
+- The project's name and standards locations
+- Which technical agents exist and what they own
+- The tech stack, testing tools, and project-specific notes for each agent
 
 ### Discovering Documentation
 
-Use the `mcp__fawkes-docs__*` tools to browse and read files from Fawkes.
+Use the `mcp__project-docs__*` tools to browse and read files from the project.
 
-Common locations to check:
-- `docs/` — general documentation
-- `guides/` — how-to guides and onboarding
-- `standards/` — coding standards and conventions
-- `auror-delivery/standards/` — comprehensive coding standards
-- `architecture/` — architectural decision records (ADRs)
+Common locations to check (as defined in `.order.yml`):
+- Standards directories
+- Documentation directories
+- Architecture decision records
+- Contributing guides
 
 ### Reading Documentation
 
 When given a task, always:
-1. First search Fawkes for relevant markdown files
-2. Read the relevant files to understand our practices
-3. Apply those practices to your work
-4. If you find conflicting or missing documentation, flag it to the Orchestrator
+1. First read `.order.yml` to find the standards paths
+2. Search the project for relevant documentation
+3. Read the relevant files to understand the project's practices
+4. Apply those practices to your work
+5. If you find conflicting or missing documentation, flag it to the Orchestrator
 
 ---
 
 ## Agent Team
 
-The team has five roles that collaborate on every piece of work. Each role
-is defined in `agents/<role>/AGENT.md`.
+The team has a core set of roles that collaborate on every piece of work.
+Each role is defined in `agents/<role>/AGENT.md`.
+
+### Default roles
 
 | Role | Focus | Key interactions |
 |------|-------|-----------------|
 | **Orchestrator** | Task breakdown, sequencing, coordination | Assigns work, routes decisions, synthesises outputs |
-| **FE Engineer** | React/TypeScript frontend in ClientApp | Coordinates with BE on API contracts, notifies QE when ready |
-| **BE Engineer** | C#/.NET backend, EF Core, APIs | Notifies FE of endpoint changes, loops in QE for test review |
 | **PM** | Requirements, scope, acceptance criteria | Scopes work before assignment, defines "done" with QE |
 | **QE** | Test strategy, coverage, quality validation | Reviews all code, validates against acceptance criteria |
+
+### Technical agents
+
+Technical agents are defined in `.order.yml` and typically include:
+
+| Role | Focus | Key interactions |
+|------|-------|-----------------|
+| **FE Engineer** | Frontend codebase | Coordinates with BE on API contracts, notifies QE when ready |
+| **BE Engineer** | Backend codebase | Notifies FE of endpoint changes, loops in QE for test review |
+
+Projects may define different technical agents (e.g., a single "Engineer" for
+a monolith, or add an "Infra Engineer" for platform work). Check `.order.yml`
+for the project's specific team configuration.
 
 ### Collaboration Rules
 
 1. **No solo work.** Every agent actively involves teammates whose area is affected.
-2. **Contracts first.** FE and BE align on API contracts before implementing.
+2. **Contracts first.** Technical agents align on API contracts before implementing.
 3. **Shift-left testing.** QE defines test scenarios before implementation starts.
 4. **PM scopes first.** PM clarifies requirements and acceptance criteria before the Orchestrator assigns work.
 5. **QE signs off last.** Nothing is considered done until QE validates it.
@@ -75,7 +97,7 @@ Use these slash commands to spawn the team:
 | `/code-review <PR>` | Five-angle PR review |
 | `/bug-investigation <bug>` | Investigate, reproduce, fix, regression-test |
 | `/dream` | Consolidate session learnings into durable knowledge |
-| `/init` | First-time setup — configure dream mode preference |
+| `/init` | First-time setup — configure dream mode, scaffold .order.yml |
 
 ---
 
@@ -90,7 +112,7 @@ durable knowledge files in `knowledge/` that future sessions can load.
 1. At session end (or manually), `/dream` reviews what happened
 2. Non-obvious, reusable learnings are distilled into `knowledge/` files
 3. Task-specific details are discarded; only generalisable insights are kept
-4. Future sessions load these files alongside Fawkes standards
+4. Future sessions load these files alongside project standards
 
 ### Modes
 
@@ -102,20 +124,19 @@ durable knowledge files in `knowledge/` that future sessions can load.
 Configure your preference with `/init` or by setting `ORDER_AUTO_DREAM` in
 `.claude/settings.local.json`.
 
-### Knowledge vs Fawkes docs
+### Knowledge vs project docs
 
-- **Fawkes docs** = team-maintained standards (the manual)
+- **Project docs** = team-maintained standards (the manual)
 - **Knowledge files** = agent-learned context (field experience)
 
-Knowledge files should contain things that can't be derived from reading Fawkes
-docs alone. If a learning keeps recurring, promote it to a proper Fawkes standard.
+Knowledge files should contain things that can't be derived from reading project
+docs alone. If a learning keeps recurring, promote it to a proper project standard.
 
 ---
 
 ## MCP Servers
 
-The `fawkes-docs` MCP server provides filesystem read access to the Fawkes
-repository. It automatically discovers the Fawkes repo on your machine by
-checking common locations (`~/Fawkes`, `~/repos/Fawkes`, `~/Desktop/Fawkes`,
-etc.) and caches the result. To override, set the `FAWKES_REPO_PATH`
-environment variable.
+The `project-docs` MCP server provides filesystem read access to the target
+project repository. It automatically discovers the project by walking up from
+the current directory looking for `.order.yml`, and caches the result. To
+override, set the `ORDER_PROJECT_PATH` environment variable.

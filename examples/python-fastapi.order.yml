@@ -1,0 +1,21 @@
+# .order.yml — Example configuration for a Python FastAPI project
+# Place this file in your project root.
+
+project:
+  name: "DataPlatform"
+  standards_paths:
+    - "docs/engineering-standards/"
+    - "CONTRIBUTING.md"
+
+team:
+  agents:
+    engineer:
+      name: "Engineer"
+      owns: "src/"
+      stack: "Python 3.12, FastAPI, SQLAlchemy 2.0, Alembic migrations, Pydantic v2"
+      testing: "pytest, httpx (API tests), factory_boy (test fixtures)"
+      notes: |
+        - Use Pydantic v2 models for all request/response schemas
+        - Alembic autogenerate for migrations — always review before applying
+        - Dependency injection via FastAPI's Depends()
+        - Async endpoints by default, sync only when calling blocking I/O
