@@ -15,25 +15,31 @@ new features, or auditing standards.
 
 ## Project Configuration
 
-Every project that uses The Order needs an `.order.yml` file in its root.
-This file tells the agents what tech stack you use, where your standards
-live, and what each agent owns.
+Each project configured with The Order has an `.order.yml` file stored in
+`~/.config/the-order/projects/`. This keeps target repos completely clean —
+no config files committed to your codebase.
 
-The path to the project is configured via the `ORDER_PROJECT_PATH` environment
-variable, or auto-discovered by walking up from the current working directory.
+Run `/init` to scan your project and create a config, or find your config at:
+```
+~/.config/the-order/projects/<project-name>.order.yml
+```
 
-### Reading the manifest
+The config file includes a `project.root` field with the absolute path to
+the project, which is how the plugin maps your current directory to the
+correct config.
 
-Before doing any work, agents MUST read `.order.yml` to understand:
-- The project's name and standards locations
-- Which technical agents exist and what they own
-- The tech stack, testing tools, and project-specific notes for each agent
+### What the config contains
+
+- `project.name` — the project name
+- `project.root` — absolute path to the project root
+- `project.standards_paths` — where standards and documentation live
+- `team.agents` — technical agents with their ownership areas, tech stacks, and notes
 
 ### Discovering Documentation
 
 Use the `mcp__project-docs__*` tools to browse and read files from the project.
 
-Common locations to check (as defined in `.order.yml`):
+Common locations to check (as defined in the project config):
 - Standards directories
 - Documentation directories
 - Architecture decision records
@@ -42,7 +48,7 @@ Common locations to check (as defined in `.order.yml`):
 ### Reading Documentation
 
 When given a task, always:
-1. First read `.order.yml` to find the standards paths
+1. First read the project config to find the standards paths
 2. Search the project for relevant documentation
 3. Read the relevant files to understand the project's practices
 4. Apply those practices to your work
@@ -65,7 +71,7 @@ Each role is defined in `agents/<role>/AGENT.md`.
 
 ### Technical agents
 
-Technical agents are defined in `.order.yml` and typically include:
+Technical agents are defined in the project config and typically include:
 
 | Role | Focus | Key interactions |
 |------|-------|-----------------|
@@ -73,8 +79,8 @@ Technical agents are defined in `.order.yml` and typically include:
 | **BE Engineer** | Backend codebase | Notifies FE of endpoint changes, loops in QE for test review |
 
 Projects may define different technical agents (e.g., a single "Engineer" for
-a monolith, or add an "Infra Engineer" for platform work). Check `.order.yml`
-for the project's specific team configuration.
+a monolith, or add an "Infra Engineer" for platform work). Check the project
+config for the specific team configuration.
 
 ### Collaboration Rules
 
@@ -97,7 +103,37 @@ Use these slash commands to spawn the team:
 | `/code-review <PR>` | Five-angle PR review |
 | `/bug-investigation <bug>` | Investigate, reproduce, fix, regression-test |
 | `/dream` | Consolidate session learnings into durable knowledge |
-| `/init` | First-time setup — configure dream mode, scaffold .order.yml |
+| `/office` | Launch the visual Office UI |
+| `/init` | First-time setup — configure project, dream mode, Office UI |
+
+---
+
+## Office UI — Visual Agent Dashboard
+
+The Office UI is an optional isometric pixel-art visualisation of the agent team
+working in real-time. Think Severance's MDR floor rendered in Habbo Hotel style.
+
+### How it works
+
+- A `PostToolUse` hook passively captures every agent tool call (zero token cost)
+- Events are written to `/tmp/the-order-events/` as JSONL files (one per agent)
+- A lightweight Node.js server watches the event files and pushes updates via WebSocket
+- A Phaser 3 browser app renders the isometric office with animated agent characters
+
+### What you see
+
+- Agents walk through a door when spawned and sit at assigned desks
+- Speech bubbles show what each agent is working on (reading, editing, searching, etc.)
+- Agents hop/emote when collaborating with each other
+- A whiteboard tracks recent activity
+- When agents complete, they file out through the door
+
+### Modes
+
+- **Auto** (`ORDER_UI=true`): Server starts automatically each session
+- **Manual** (`ORDER_UI=false`): Run `/office` to start on demand. Default.
+
+Configure with `/init` or by setting `ORDER_UI` in `.claude/settings.local.json`.
 
 ---
 
@@ -137,6 +173,6 @@ docs alone. If a learning keeps recurring, promote it to a proper project standa
 ## MCP Servers
 
 The `project-docs` MCP server provides filesystem read access to the target
-project repository. It automatically discovers the project by walking up from
-the current directory looking for `.order.yml`, and caches the result. To
-override, set the `ORDER_PROJECT_PATH` environment variable.
+project repository. It discovers the project root from the config files in
+`~/.config/the-order/projects/` by matching against the current working directory.
+To override, set the `ORDER_PROJECT_PATH` environment variable.

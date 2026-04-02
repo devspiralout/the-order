@@ -1,14 +1,20 @@
 #!/usr/bin/env bash
-# Locates the target project repository on the local machine.
-# The project is identified by having an .order.yml file in its root.
-# Priority: $ORDER_PROJECT_PATH > walk up from CWD > cached path > broad search
-# Outputs the absolute path to stdout, exits 1 if not found.
+# Locates the target project and its .order.yml config.
+#
+# Project configs are stored in ~/.config/the-order/projects/, NOT in the
+# project repo itself — this keeps target repos clean.
+#
+# Priority: $ORDER_PROJECT_PATH > match CWD against stored configs > cached path
+#
+# Outputs the absolute path to the PROJECT ROOT to stdout.
+# The config file path can be derived: ~/.config/the-order/projects/<name>.order.yml
 
 set -euo pipefail
 
+CONFIG_DIR="${HOME}/.config/the-order/projects"
 CACHE_FILE="${HOME}/.cache/the-order/project-path"
 
-# Helper: cache and output a discovered path
+# Helper: output a discovered path (and cache it)
 found() {
   local dir="$1"
   mkdir -p "$(dirname "$CACHE_FILE")"
@@ -23,37 +29,48 @@ if [[ -n "${ORDER_PROJECT_PATH:-}" ]] && [[ -d "$ORDER_PROJECT_PATH" ]]; then
   exit 0
 fi
 
-# 2. Walk up from CWD looking for .order.yml (most reliable for multi-project)
-dir="$(pwd)"
-while [[ "$dir" != "/" ]]; do
-  if [[ -f "$dir/.order.yml" ]]; then
-    found "$dir"
-  fi
-  dir="$(dirname "$dir")"
-done
+# 2. Match CWD against stored project configs
+if [[ -d "$CONFIG_DIR" ]]; then
+  cwd="$(pwd)"
+  for config in "$CONFIG_DIR"/*.order.yml; do
+    [[ -f "$config" ]] || continue
 
-# 3. Check cached path as fallback (only if CWD walk-up found nothing)
+    # Extract the root path from the config file
+    # Looks for "  root: /some/path" or "  root: \"/some/path\""
+    root=$(grep -E '^\s+root:\s+' "$config" 2>/dev/null | head -1 | sed 's/.*root:\s*//; s/^"//; s/"$//' | sed 's/^ *//')
+
+    if [[ -n "$root" ]] && [[ -d "$root" ]]; then
+      # Check if CWD is inside this project root
+      case "$cwd" in
+        "$root"|"$root"/*)
+          found "$root"
+          ;;
+      esac
+    fi
+  done
+fi
+
+# 3. Check cached path as fallback
 if [[ -f "$CACHE_FILE" ]]; then
   cached=$(cat "$CACHE_FILE")
-  if [[ -d "$cached" ]] && [[ -f "$cached/.order.yml" ]]; then
-    echo "$cached"
-    exit 0
+  if [[ -d "$cached" ]]; then
+    # Verify a config still exists for this path
+    if [[ -d "$CONFIG_DIR" ]]; then
+      for config in "$CONFIG_DIR"/*.order.yml; do
+        [[ -f "$config" ]] || continue
+        root=$(grep -E '^\s+root:\s+' "$config" 2>/dev/null | head -1 | sed 's/.*root:\s*//; s/^"//; s/"$//' | sed 's/^ *//')
+        if [[ "$root" == "$cached" ]]; then
+          echo "$cached"
+          exit 0
+        fi
+      done
+    fi
   fi
   # Cache is stale, remove it
   rm -f "$CACHE_FILE"
 fi
 
-# 4. Broad search — look for .order.yml anywhere under home (max depth 5, timeout 5s)
-results=$(timeout 5 find "$HOME" -maxdepth 5 -name ".order.yml" -type f 2>/dev/null | head -5)
-
-while IFS= read -r match; do
-  if [[ -n "$match" ]]; then
-    candidate="$(cd "$(dirname "$match")" && pwd)"
-    found "$candidate"
-  fi
-done <<< "$results"
-
-echo "ERROR: Could not find a project with .order.yml." >&2
-echo "Create an .order.yml in your project root, or set ORDER_PROJECT_PATH." >&2
-echo "See: https://github.com/devspiralout/the-order/tree/main/examples" >&2
+echo "ERROR: No project config found for the current directory." >&2
+echo "Run /init to scan your project and create a config." >&2
+echo "Configs are stored in: $CONFIG_DIR" >&2
 exit 1

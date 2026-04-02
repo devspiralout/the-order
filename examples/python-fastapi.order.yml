@@ -1,8 +1,9 @@
 # .order.yml — Example configuration for a Python FastAPI project
-# Place this file in your project root.
+# Store at: ~/.config/the-order/projects/dataplatform.order.yml
 
 project:
   name: "DataPlatform"
+  root: "/Users/you/DataPlatform"
   standards_paths:
     - "docs/engineering-standards/"
     - "CONTRIBUTING.md"

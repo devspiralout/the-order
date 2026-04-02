@@ -1,8 +1,9 @@
 # .order.yml — Example configuration for a Go monolith
-# Place this file in your project root.
+# Store at: ~/.config/the-order/projects/platform.order.yml
 
 project:
   name: "Platform"
+  root: "/Users/you/Platform"
   standards_paths:
     - "docs/standards/"
 

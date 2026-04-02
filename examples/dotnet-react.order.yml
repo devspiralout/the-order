@@ -1,8 +1,9 @@
 # .order.yml — Example configuration for a C#/.NET + React project
-# Place this file in your project root.
+# Store at: ~/.config/the-order/projects/myapp.order.yml
 
 project:
   name: "MyApp"
+  root: "/Users/you/MyApp"
   standards_paths:
     - "docs/standards/"
     - "docs/architecture/"
