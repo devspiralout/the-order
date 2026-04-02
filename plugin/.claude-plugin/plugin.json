@@ -1,6 +1,6 @@
 {
   "name": "order-of-the-phoenix",
-  "description": "Agent team (Orchestrator, FE, BE, PM, QE) that reads your project's engineering standards and applies them to feature delivery, code review, and bug investigation.",
+  "description": "Agent team (Orchestrator, PM, QE, plus configurable technical agents) that reads your project's engineering standards and applies them to feature delivery, code review, and bug investigation.",
   "version": "2.0.0",
   "author": {
     "name": "The Order"

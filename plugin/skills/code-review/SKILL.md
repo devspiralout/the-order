@@ -1,28 +1,30 @@
 ---
 name: code-review
-description: Spawn the Order agent team to review a PR or set of changes from five angles — standards, domain logic, frontend, backend, and test coverage.
+description: Spawn the Order agent team to review a PR or set of changes from multiple angles — standards, domain logic, and test coverage.
 ---
 
 Spawn the Order of the Phoenix agent team to review the given PR or code changes.
 
 ## Team to spawn
 
-Create all five agents with review-focused roles:
+First, read the project's `.order.yml` to discover which technical agents are configured.
+
+Always create these three core agents with review-focused roles:
 
 1. **PM** — Check changes match the ticket intent and acceptance criteria
-2. **FE Engineer** — Review frontend code against project frontend standards
-3. **BE Engineer** — Review backend code against project backend standards
-4. **QE** — Check test coverage, identify missing edge cases, validate error handling
-5. **Orchestrator** — Synthesise all feedback into a structured review
+2. **QE** — Check test coverage, identify missing edge cases, validate error handling
+3. **Orchestrator** — Synthesise all feedback into a structured review
+
+Then create one agent for **each technical agent** defined in the `team.agents` section
+of `.order.yml`. Each reviews the code in their ownership area against project standards.
 
 ## Review workflow
 
 1. All agents read the project's `.order.yml` and relevant standards for their area first
 2. **PM** reviews the changes against the ticket/intent — are we building the right thing?
-3. **FE Engineer** reviews frontend code for standards compliance, patterns, and conventions
-4. **BE Engineer** reviews backend code for standards compliance, patterns, and data access
-5. **QE** reviews test coverage, edge cases, error paths, and test identifiers
-6. **Orchestrator** collects all feedback and produces a single structured review
+3. Each technical agent reviews code in their ownership area for standards compliance, patterns, and conventions
+4. **QE** reviews test coverage, edge cases, error paths, and test identifiers
+5. **Orchestrator** collects all feedback and produces a single structured review
 
 ## Review output format
 
