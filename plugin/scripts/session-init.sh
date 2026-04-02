@@ -14,9 +14,14 @@ if [[ ! -f "$INIT_FLAG" ]]; then
   cat <<'WELCOME'
 Welcome to **The Order of the Phoenix** — your agent team plugin.
 
-This plugin spawns a team of five specialist agents (Orchestrator, FE Engineer,
-BE Engineer, PM, QE) that read your Fawkes coding standards and collaborate on
-feature delivery, code reviews, and bug investigations.
+This plugin spawns a team of specialist agents (Orchestrator, FE Engineer,
+BE Engineer, PM, QE) that read your project's coding standards and collaborate
+on feature delivery, code reviews, and bug investigations.
+
+## Getting Started
+
+The Order needs an `.order.yml` file in your project root to understand your
+tech stack and standards. Run `/init` to generate one automatically.
 
 ## Dream Mode
 
@@ -30,7 +35,7 @@ You have two options:
 - **Manual** (`ORDER_AUTO_DREAM=false`): You run `/dream` yourself when you
   want to consolidate learnings. Good if you prefer full control.
 
-**Please tell me which mode you'd like (auto or manual) and I'll configure it.**
+**Run `/init` to configure your preferences and get started.**
 
 ## Quick Start
 

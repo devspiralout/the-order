@@ -1,0 +1,30 @@
+# .order.yml — Example configuration for a Go monolith
+# Place this file in your project root.
+
+project:
+  name: "Platform"
+  standards_paths:
+    - "docs/standards/"
+
+team:
+  agents:
+    engineer:
+      name: "Engineer"
+      owns: "internal/, cmd/"
+      stack: "Go 1.22, Chi router, sqlc for queries, pgx for Postgres"
+      testing: "go test, testify, dockertest for integration tests"
+      notes: |
+        - Follow the standard project layout (cmd/, internal/, pkg/)
+        - Use sqlc for type-safe SQL — never hand-write query scanning
+        - Errors: use fmt.Errorf with %w for wrapping
+        - Context propagation: pass ctx as first arg everywhere
+
+    infra-engineer:
+      name: "Infra Engineer"
+      owns: "deploy/, terraform/"
+      stack: "Terraform, Kubernetes (EKS), GitHub Actions CI/CD"
+      testing: "terratest, helm unittest"
+      notes: |
+        - All infra changes go through terraform plan review before apply
+        - Helm charts in deploy/charts/ — bump chart version on changes
+        - GitHub Actions workflows in .github/workflows/

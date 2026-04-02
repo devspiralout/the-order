@@ -1,7 +1,7 @@
 {
   "name": "order-of-the-phoenix",
-  "description": "Agent team (Orchestrator, FE, BE, PM, QE) that reads Fawkes engineering standards and applies them to feature delivery, code review, and bug investigation.",
-  "version": "1.0.0",
+  "description": "Agent team (Orchestrator, FE, BE, PM, QE) that reads your project's engineering standards and applies them to feature delivery, code review, and bug investigation.",
+  "version": "2.0.0",
   "author": {
     "name": "The Order"
   }

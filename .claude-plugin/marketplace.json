@@ -4,19 +4,19 @@
     "name": "devspiralout"
   },
   "metadata": {
-    "description": "Order of the Phoenix — agent team plugin for Fawkes",
-    "version": "1.0.0"
+    "description": "Order of the Phoenix — generic agent team plugin for any codebase",
+    "version": "2.0.0"
   },
   "plugins": [
     {
       "name": "order-of-the-phoenix",
       "source": "./plugin",
-      "description": "Agent team (Orchestrator, FE, BE, PM, QE) that reads Fawkes engineering standards and applies them to feature delivery, code review, and bug investigation.",
-      "version": "1.0.0",
+      "description": "Agent team (Orchestrator, FE, BE, PM, QE) that reads your project's engineering standards and applies them to feature delivery, code review, and bug investigation. Works with any tech stack via .order.yml configuration.",
+      "version": "2.0.0",
       "author": {
         "name": "devspiralout"
       },
-      "keywords": ["agents", "team", "fawkes", "standards", "review"],
+      "keywords": ["agents", "team", "standards", "review", "generic"],
       "category": "productivity"
     }
   ]

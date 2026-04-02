@@ -18,10 +18,10 @@ Create all five agents with investigation-focused roles:
 ## Investigation workflow
 
 1. **PM** clarifies the expected behaviour vs what's actually happening
-2. **Orchestrator** assigns investigation areas to FE and BE based on where the bug likely lives
-3. **FE** and **BE** investigate their respective areas in parallel
+2. **Orchestrator** assigns investigation areas to technical agents based on where the bug likely lives
+3. Technical agents investigate their respective areas in parallel
 4. **QE** writes a reproduction test that demonstrates the bug
-5. Engineers propose fixes, coordinating if the fix spans FE and BE
+5. Engineers propose fixes, coordinating if the fix spans multiple areas
 6. **QE** validates the fix and defines regression tests
 7. **PM** confirms the fix matches expected behaviour
 8. **Orchestrator** synthesises the root cause analysis and fix summary

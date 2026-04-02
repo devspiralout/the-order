@@ -1,0 +1,38 @@
+# .order.yml — Example configuration for the Fawkes project (C#/.NET + React)
+# Place this file in your project root.
+
+project:
+  name: "Fawkes"
+  standards_paths:
+    - "auror-delivery/standards/"
+    - "docs/"
+    - "guides/"
+    - "architecture/"
+
+team:
+  agents:
+    fe-engineer:
+      name: "FE Engineer"
+      owns: "Auror.Fawkes.Web/ClientApp/"
+      stack: "React 18, TypeScript 5.4, Tailwind CSS (fx- prefix), Lumos component library, MobX + Tanstack Query"
+      testing: "Jest + React Testing Library, Storybook, Playwright E2E with data-locator attributes"
+      notes: |
+        - Run `pnpm generate-api` after BE endpoint changes to regenerate the TypeScript API client
+        - Add `data-locator` attributes for E2E test targeting (defined in DataLocators.ts)
+        - i18n: only modify `en/` locale files; version translation keys (_v2, _v3) instead of editing
+        - Use Lumos components over external alternatives
+        - Styling: Tailwind with `fx-` prefix (e.g., `fx-flex`, `fx-p-4`)
+
+    be-engineer:
+      name: "BE Engineer"
+      owns: "Auror.Fawkes.Core/, Auror.Fawkes.Web/Controllers/"
+      stack: "C#/.NET 8, EF Core (SQL Server code-first), feature folder organisation"
+      testing: "xUnit, NSubstitute"
+      notes: |
+        - Strong-typed IDs: use `Id<T>` pattern (e.g., `Id<Investigation>`)
+        - `ExecuteUpdate` calls must manually set `UpdatedAt`/`UpdatedById` audit fields
+        - Feature flags defined in `FeatureName.cs`, consumed via `featureToggleService.CheckToggle()`
+        - Exception hierarchy: FawkesNotFoundException (404), FawkesAccessDeniedException (403),
+          FawkesInvalidInputException (400), FawkesInvalidOperationException (500)
+        - DI auto-registration for services (IMyService / MyService pattern)
+        - Controller groups: ClientApi, OpenApi, InternalApi, MobileApi

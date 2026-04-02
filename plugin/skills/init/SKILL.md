@@ -7,7 +7,12 @@ Help the user configure The Order plugin for first use.
 
 ## What to do
 
-1. Explain the two dream modes:
+1. Check if the project has an `.order.yml` file. If not, offer to help create
+   one by scanning the project for signals (package.json, *.csproj, pyproject.toml,
+   go.mod, Cargo.toml, etc.) and generating a draft. Show it to the user for review
+   before writing it.
+
+2. Explain the two dream modes:
 
    - **Auto** (`ORDER_AUTO_DREAM=true`): The team automatically consolidates
      learnings before each session ends. Good for teams that want continuous
@@ -16,9 +21,9 @@ Help the user configure The Order plugin for first use.
      want to consolidate. Good for users who want full control or only dream
      after substantial sessions.
 
-2. Ask the user which mode they prefer.
+3. Ask the user which mode they prefer.
 
-3. Based on their choice, update `.claude/settings.local.json` to set the
+4. Based on their choice, update `.claude/settings.local.json` to set the
    `ORDER_AUTO_DREAM` environment variable:
 
    ```json
@@ -32,13 +37,13 @@ Help the user configure The Order plugin for first use.
    Merge with any existing content in `.claude/settings.local.json` — don't
    overwrite other settings.
 
-4. Confirm the setup is complete and remind them of the available commands:
+5. Confirm the setup is complete and remind them of the available commands:
    - `/team-setup <task>` — full squad for feature work
    - `/code-review <PR>` — five-angle PR review
    - `/bug-investigation <bug>` — investigate and fix bugs
    - `/dream` — manually trigger dream consolidation
 
-5. Create the initialisation flag:
+6. Create the initialisation flag:
    ```bash
    mkdir -p ~/.config/the-order && touch ~/.config/the-order/initialized
    ```

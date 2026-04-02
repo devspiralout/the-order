@@ -11,8 +11,8 @@ Create all five agents with these roles:
 
 1. **Orchestrator** — Break down the task, coordinate the team, sequence dependencies
 2. **PM** — Define acceptance criteria, scope, and trade-offs
-3. **FE Engineer** — Implement frontend changes in React/TypeScript
-4. **BE Engineer** — Implement backend changes in C#/.NET
+3. **FE Engineer** — Implement frontend changes
+4. **BE Engineer** — Implement backend changes
 5. **QE** — Define test plan, review coverage, validate the implementation
 
 ## Workflow
@@ -31,7 +31,7 @@ Follow this sequence:
 
 ## Before starting
 
-All agents MUST read the relevant Fawkes documentation using the `mcp__fawkes-docs__*` tools before doing any work. Check `auror-delivery/standards/` for coding standards relevant to your role.
+All agents MUST read the project's `.order.yml` to understand the tech stack, ownership areas, and project-specific conventions. Then use the `mcp__project-docs__*` tools to read the relevant standards for your role.
 
 ## The task
 
