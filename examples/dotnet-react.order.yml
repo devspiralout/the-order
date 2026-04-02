@@ -1,0 +1,31 @@
+# .order.yml — Example configuration for a C#/.NET + React project
+# Place this file in your project root.
+
+project:
+  name: "MyApp"
+  standards_paths:
+    - "docs/standards/"
+    - "docs/architecture/"
+
+team:
+  agents:
+    fe-engineer:
+      name: "FE Engineer"
+      owns: "src/Web/ClientApp/"
+      stack: "React 18, TypeScript 5, Tailwind CSS, Tanstack Query"
+      testing: "Jest + React Testing Library, Storybook, Playwright E2E"
+      notes: |
+        - Run `pnpm generate-api` after BE endpoint changes to regenerate the TypeScript API client
+        - Add `data-testid` attributes on interactive elements for E2E targeting
+        - i18n: use react-i18next, only modify `en/` locale files
+
+    be-engineer:
+      name: "BE Engineer"
+      owns: "src/Core/, src/Web/Controllers/"
+      stack: "C#/.NET 8, EF Core (SQL Server code-first), MediatR"
+      testing: "xUnit, NSubstitute"
+      notes: |
+        - Feature folder organisation under src/Core/Features/
+        - DI auto-registration for services (IMyService / MyService pattern)
+        - Use FluentValidation for request validation
+        - Migrations via `dotnet ef migrations add <Name>`

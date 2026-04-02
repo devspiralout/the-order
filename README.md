@@ -173,7 +173,7 @@ the-order/
 ├── .claude-plugin/
 │   └── marketplace.json             # Marketplace definition
 ├── examples/                        # .order.yml examples for common stacks
-│   ├── fawkes.order.yml             # C#/.NET + React example
+│   ├── dotnet-react.order.yml        # C#/.NET + React example
 │   ├── python-fastapi.order.yml     # Python FastAPI example
 │   └── go-monolith.order.yml        # Go + Terraform example
 ├── plugin/                          # The actual plugin
